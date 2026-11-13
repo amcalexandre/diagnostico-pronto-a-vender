@@ -1,0 +1,427 @@
+<title>Diagnóstico Pronto a Vender</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: coluna única de 760px; o resultado lê-se como uma etiqueta de classes (A a E), à maneira do certificado energético. */
+:root{
+  --bg:#F2F4F8; --surface:#FFFFFF; --sunken:#E9EDF3; --ink:#15223A; --muted:#566379; --line:#D5DCE7;
+  --accent:#1D4FD7; --on-accent:#FFFFFF; --bad:#B3372A;
+  --cA:#3DB67F; --cB:#9CC44A; --cC:#E8BE3A; --cD:#EE9548; --cE:#E86A5A; --on-band:#10182A;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E1524; --surface:#172036; --sunken:#111A2C; --ink:#E8EDF7; --muted:#9BA8BF; --line:#2B3856;
+  --accent:#86A6FF; --on-accent:#0E1524; --bad:#FF8E7E; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0E1524; --surface:#172036; --sunken:#111A2C; --ink:#E8EDF7; --muted:#9BA8BF; --line:#2B3856;
+  --accent:#86A6FF; --on-accent:#0E1524; --bad:#FF8E7E; color-scheme:dark }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.1}
+h1{font-size:clamp(2rem,6vw,3rem);font-weight:700;letter-spacing:-.02em}
+h2{font-size:1.5rem;font-weight:700}
+h3{font-size:1.05rem;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.875rem}
+.eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+
+.byline{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 16px;font-size:.875rem;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:12px}
+.byline strong{color:var(--ink);font-weight:600}
+
+.hero{display:grid;grid-template-columns:1.15fr 1fr;gap:28px;align-items:center}
+.hero > *{min-width:0}
+.hero-copy{display:flex;flex-direction:column;gap:14px}
+.facts{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.9rem;color:var(--muted);padding:0;margin:0;list-style:none}
+.facts b{color:var(--ink);font-variant-numeric:tabular-nums}
+@media (max-width:640px){.hero{grid-template-columns:1fr}}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.sample{display:flex;flex-direction:column;gap:12px}
+.tag{align-self:flex-start;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px dashed var(--muted);color:var(--muted);border-radius:99px;padding:2px 10px}
+
+/* etiqueta de classes */
+.ladder{display:flex;flex-direction:column;gap:5px}
+.rung{display:flex;align-items:center;gap:8px;opacity:.32}
+.rung.on{opacity:1}
+.rung .bar{color:var(--on-band);font-weight:700;font-size:.85rem;padding:5px 10px;border-radius:4px 14px 14px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.rung .bar span{font-weight:500}
+.rung .pt{font-family:var(--display);font-weight:700;font-size:1.05rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rung:not(.on) .pt{visibility:hidden}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0;margin:0;list-style:none}
+.steps li{border-top:3px solid var(--line);padding-top:8px;font-size:.85rem;color:var(--muted);min-width:0}
+.steps li b{display:block;color:inherit;font-weight:600}
+.steps li.now{border-color:var(--accent);color:var(--ink)}
+.steps li.done{border-color:var(--ink)}
+@media (max-width:480px){.steps li span{display:none}}
+
+form,.panel{display:flex;flex-direction:column;gap:20px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.grid .full{grid-column:1/-1}
+@media (max-width:560px){.grid{grid-template-columns:1fr}}
+label.f{display:flex;flex-direction:column;gap:5px;font-size:.875rem;font-weight:600}
+label.f em{font-style:normal;font-weight:400;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+textarea{resize:vertical;min-height:210px;font-size:.9rem;line-height:1.5}
+:is(input,select,textarea,button,a):focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+fieldset{border:0;padding:0;margin:0;min-width:0}
+.sep{border:0;border-top:1px solid var(--line);margin:0}
+.note{background:var(--sunken);border-radius:8px;padding:12px 14px;font-size:.875rem;color:var(--muted)}
+.err{color:var(--bad);font-weight:600;font-size:.9rem}
+
+.btns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{font:600 1rem var(--body);border-radius:8px;padding:12px 20px;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);cursor:pointer;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:hover{filter:brightness(1.08)}
+
+.q{display:flex;flex-direction:column;gap:8px;padding-block:14px;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0}
+.q legend{font-weight:600;padding:0;display:flex;gap:10px;justify-content:space-between;width:100%}
+.q legend small{font-weight:500;color:var(--muted);white-space:nowrap}
+.q.miss legend{color:var(--bad)}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.scale label{position:relative;display:block}
+.scale input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;padding:0}
+.scale span{display:flex;flex-direction:column;align-items:center;gap:1px;border:1px solid var(--line);border-radius:8px;padding:7px 2px;background:var(--surface);font-weight:700;font-variant-numeric:tabular-nums}
+.scale span i{font-style:normal;font-weight:500;font-size:.68rem;color:var(--muted)}
+.scale input:checked + span{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.scale input:checked + span i{color:var(--on-accent)}
+.scale input:focus-visible + span{outline:3px solid var(--accent);outline-offset:2px}
+@media (max-width:420px){.scale span i{display:none}}
+.prog{height:6px;background:var(--sunken);border-radius:99px;overflow:hidden}
+.prog div{height:100%;background:var(--accent);width:0;transition:width .25s}
+@media (prefers-reduced-motion:reduce){.prog div{transition:none}}
+
+.score{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+.score > *{min-width:0}
+.big{font-family:var(--display);font-weight:700;font-size:clamp(3.5rem,14vw,5.5rem);line-height:.9;font-variant-numeric:tabular-nums}
+.big small{font-size:.3em;color:var(--muted);font-weight:500}
+@media (max-width:520px){.score{grid-template-columns:1fr}}
+.areas{display:flex;flex-direction:column;gap:9px}
+.area{display:grid;grid-template-columns:minmax(0,13rem) 1fr 2.5rem;gap:10px;align-items:center;font-size:.9rem}
+.area .track{height:10px;background:var(--sunken);border-radius:99px;overflow:hidden}
+.area .track div{height:100%;border-radius:99px}
+.area b{text-align:right;font-variant-numeric:tabular-nums}
+@media (max-width:480px){.area{grid-template-columns:minmax(0,1fr) 5rem 2.2rem}}
+.plan{display:flex;flex-direction:column;gap:0;padding:0;margin:0;list-style:none}
+.plan li{padding-block:12px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:2px}
+.plan li:first-child{border-top:0}
+.plan li b{font-weight:600}
+.plan li span{color:var(--muted);font-size:.92rem}
+.sec{display:flex;flex-direction:column;gap:12px}
+</style>
+
+<div class="wrap">
+  <div class="byline">
+    <span><strong>António Alexandre</strong> · consultor imobiliário, RE/MAX Siimgroup</span>
+    <span>Lisboa</span>
+  </div>
+
+  <header class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Diagnóstico gratuito para proprietários</p>
+      <h1>A sua casa está pronta para ir ao mercado?</h1>
+      <p>Avalie o seu imóvel em seis áreas e receba uma classificação de A a E, os pontos que mais o prejudicam e o que fazer primeiro.</p>
+      <ul class="facts">
+        <li><b>30</b> critérios</li><li><b>6</b> áreas</li><li>resultado de <b>0 a 100</b></li><li>cerca de <b>5</b> minutos</li>
+      </ul>
+      <p class="small muted">É um diagnóstico de preparação para a venda ou arrendamento. Não é uma avaliação do valor do imóvel.</p>
+    </div>
+    <div class="card sample" aria-label="Exemplo de resultado">
+      <span class="tag">Exemplo</span>
+      <p class="small muted">T2 com 85 m², anunciado há 4 meses</p>
+      <div id="sampleLadder" class="ladder"></div>
+      <p class="small muted">Ponto mais fraco neste exemplo: qualidade das fotografias.</p>
+    </div>
+  </header>
+
+  <ol class="steps" id="steps">
+    <li class="now"><b>1. Imóvel</b><span>Perfil e situação atual</span></li>
+    <li><b>2. Avaliação</b><span>30 notas de 1 a 5</span></li>
+    <li><b>3. Resultado</b><span>Classe, pontos fracos e plano</span></li>
+  </ol>
+
+  <!-- ETAPA 1 -->
+  <section id="s1" class="card">
+    <form id="f1" novalidate>
+      <div class="sec"><h2>O seu imóvel</h2><p class="muted">Só o concelho e o tipo de imóvel são obrigatórios. O resto torna o diagnóstico mais útil.</p></div>
+      <div class="grid">
+        <label class="f">Nome <input id="nome" autocomplete="name"></label>
+        <label class="f"><span>Telemóvel <em>opcional</em></span><input id="tel" type="tel" autocomplete="tel" inputmode="tel"></label>
+        <label class="f full"><span>Email <em>opcional</em></span><input id="email" type="email" autocomplete="email"></label>
+        <label class="f">Concelho <input id="concelho" placeholder="Lisboa" required></label>
+        <label class="f">Freguesia ou zona <input id="zona" placeholder="Benfica"></label>
+        <label class="f">Tipo de imóvel
+          <select id="tipo" required><option value="">Escolha</option><option>Apartamento</option><option>Moradia</option><option>Loja ou escritório</option><option>Armazém</option><option>Terreno</option></select></label>
+        <label class="f">Tipologia
+          <select id="tipologia"><option value="">Não se aplica</option><option>T0</option><option>T1</option><option>T2</option><option>T3</option><option>T4</option><option>T5 ou mais</option></select></label>
+        <label class="f">Área bruta privativa (m²) <input id="area" inputmode="numeric"></label>
+        <label class="f">Classe energética
+          <select id="ce"><option value="">Não sei</option><option>A+</option><option>A</option><option>B</option><option>B-</option><option>C</option><option>D</option><option>E</option><option>F</option><option>Sem certificado</option></select></label>
+        <label class="f">Objetivo
+          <select id="objetivo"><option>Venda</option><option>Arrendamento</option></select></label>
+        <label class="f"><span>Valor pretendido (€) <em>opcional</em></span><input id="valor" inputmode="numeric"></label>
+      </div>
+      <hr class="sep">
+      <div class="sec"><h3>Situação no mercado</h3></div>
+      <div class="grid">
+        <label class="f full">Há quanto tempo está anunciado
+          <select id="tempo"><option value="0">Ainda não está anunciado</option><option value="1">Até 30 dias</option><option value="2">1 a 3 meses</option><option value="3">3 a 6 meses</option><option value="4">6 a 12 meses</option><option value="5">Mais de 12 meses</option></select></label>
+        <label class="f">Visitas recebidas
+          <select id="visitas"><option value="0">Nenhuma</option><option value="1">1 a 3</option><option value="2">4 a 6</option><option value="3">7 a 10</option><option value="4">11 a 20</option><option value="5">Mais de 20</option></select></label>
+        <label class="f">Propostas recebidas
+          <select id="propostas"><option value="0">Nenhuma</option><option value="1">1</option><option value="2">2</option><option value="3">3 ou mais</option></select></label>
+      </div>
+      <p class="note">Esta página não guarda nem envia os seus dados. Ficam apenas no seu ecrã. No fim decide se quer enviar o resultado ao consultor, e vê a mensagem antes de a enviar.</p>
+      <p class="err" id="e1" hidden></p>
+      <div class="btns"><button class="btn" type="submit">Continuar para a avaliação</button></div>
+    </form>
+  </section>
+
+  <!-- ETAPA 2 -->
+  <section id="s2" class="card" hidden>
+    <div class="panel">
+      <div class="sec">
+        <p class="eyebrow" id="gCount"></p>
+        <h2 id="gTitle"></h2>
+        <p class="muted" id="gHelp"></p>
+        <div class="prog" aria-hidden="true"><div id="progBar"></div></div>
+      </div>
+      <div id="qs"></div>
+      <p class="err" id="e2" hidden>Falta dar nota aos critérios assinalados.</p>
+      <div class="btns"><button class="btn ghost" type="button" id="back">Voltar</button><button class="btn" type="button" id="next">Seguinte</button></div>
+    </div>
+  </section>
+
+  <!-- ETAPA 3 -->
+  <section id="s3" class="panel" hidden>
+    <div class="card panel">
+      <div class="sec"><p class="eyebrow" id="rProp"></p><h2 id="rHead"></h2></div>
+      <div class="score">
+        <div class="big"><span id="rScore"></span><small> /100</small></div>
+        <div id="rLadder" class="ladder"></div>
+      </div>
+      <p id="rText"></p>
+    </div>
+    <div class="card sec"><h3>Nota por área</h3><div class="areas" id="rAreas"></div></div>
+    <div class="card sec" id="rMarketBox"><h3>Leitura da situação no mercado</h3><p id="rMarket"></p></div>
+    <div class="card sec"><h3>O que fazer primeiro</h3><p class="muted small">Ordenado pelo que mais pesa no resultado.</p><ol class="plan" id="rPlan"></ol></div>
+    <div class="card sec">
+      <h3>Quer uma segunda opinião e um estudo de mercado da sua zona?</h3>
+      <p class="muted">Envie este resumo ao António Alexandre. Pode editar o texto antes de enviar.</p>
+      <label class="f">Mensagem <textarea id="msg"></textarea></label>
+      <div class="btns">
+        <a class="btn" id="wa" target="_blank" rel="noopener" hidden>Abrir no WhatsApp</a>
+        <button class="btn" type="button" id="copy">Copiar resumo</button>
+        <button class="btn ghost" type="button" id="redo">Rever respostas</button>
+      </div>
+      <p class="small muted" id="copyMsg" aria-live="polite"></p>
+    </div>
+    <p class="small muted">Diagnóstico indicativo, calculado a partir das suas respostas com uma grelha fixa de 30 critérios ponderados. Não substitui uma visita ao imóvel nem um estudo de mercado.</p>
+  </section>
+</div>
+
+<script>
+/* Contacto do consultor: número de WhatsApp só com dígitos e indicativo (ex.: 3519XXXXXXXX). Vazio = sem botão de WhatsApp. */
+var WHATSAPP = "351912317874";
+
+/*LOGIC:BEGIN*/
+var GROUPS = [
+ {t:"Preço e posicionamento", h:"Compare com imóveis parecidos na mesma zona, não com o valor de que precisa.", q:[
+  ["Preço face a imóveis semelhantes vendidos na zona",3,"Peça os valores reais de venda na zona (não os de anúncio) e ajuste o preço a esses números."],
+  ["Preço face aos imóveis concorrentes anunciados agora",3,"Liste os cinco concorrentes diretos nos portais e posicione o seu preço no terço mais atrativo."],
+  ["Margem de negociação definida à partida",2,"Defina antes das visitas quanto pode ceder, para responder a propostas no próprio dia."],
+  ["Clareza sobre o valor mínimo que aceita",1,"Fixe o valor mínimo com todos os proprietários, por escrito, antes de receber propostas."],
+  ["Flexibilidade nas condições (prazos, sinal, recheio)",1,"Decida já o que pode oferecer: prazo de escritura, mobília incluída, data de entrega das chaves."]]},
+ {t:"Estado de conservação", h:"1 significa a precisar de obras, 5 significa renovado ou como novo.", q:[
+  ["Pintura e paredes",2,"Uma pintura em tons neutros é a obra com melhor retorno antes de fotografar."],
+  ["Pavimentos",2,"Repare ou envernize as zonas gastas; um pavimento cuidado muda a primeira impressão."],
+  ["Cozinha",3,"Sem fazer obra total: troque puxadores, bancada ou torneira e trate dos eletrodomésticos avariados."],
+  ["Casas de banho",3,"Renove juntas, silicones e torneiras; resolva manchas de humidade antes das visitas."],
+  ["Canalização e instalação elétrica",3,"Peça uma verificação a um técnico e guarde o relatório para mostrar a quem visita."]]},
+ {t:"Apresentação nas visitas", h:"Pense no que um estranho vê nos primeiros dois minutos dentro de casa.", q:[
+  ["Arrumação e despersonalização",2,"Retire metade dos objetos, fotografias de família e móveis a mais; a casa parece maior."],
+  ["Limpeza e cheiros",2,"Faça uma limpeza profunda e areje antes de cada visita; tabaco e animais afastam compradores."],
+  ["Luz natural e iluminação",2,"Abra estores, lave vidros e troque lâmpadas fundidas ou frias por luz quente."],
+  ["Pequenas reparações em dia",2,"Resolva portas que não fecham, estores presos e tomadas soltas: são lidos como falta de manutenção."],
+  ["Varandas, exteriores e entrada do prédio",1,"Limpe a varanda e fale com o condomínio sobre a entrada e as escadas, que são a primeira imagem."]]},
+ {t:"Anúncio e divulgação", h:"Se ainda não anunciou, avalie o material que já tem preparado.", q:[
+  ["Qualidade das fotografias",3,"Faça fotografia profissional com a casa preparada; é o que decide se o comprador marca visita."],
+  ["Texto do anúncio",2,"Reescreva o texto com áreas, orientação solar, obras feitas e o que há a pé de casa."],
+  ["Planta e vídeo ou visita virtual",2,"Junte planta com medidas e um vídeo curto; filtram curiosos e atraem quem compra à distância."],
+  ["Presença nos principais portais",2,"Confirme que está nos portais mais usados, com destaque nas primeiras semanas."],
+  ["Divulgação para além dos portais",1,"Use redes sociais, base de compradores e partilha com outros consultores para chegar a mais gente."]]},
+ {t:"Documentação", h:"1 significa que não tem o documento, 5 significa que está válido e à mão.", q:[
+  ["Caderneta predial e certidão permanente atualizadas",3,"Peça ambas online (Finanças e Predial Online) e confirme que não há ónus por cancelar."],
+  ["Certificado energético válido",3,"É pedido logo no anúncio. Marque um perito qualificado; costuma ficar pronto em poucos dias."],
+  ["Licença de utilização ou prova de isenção",3,"Peça cópia na câmara municipal e confirme com o seu consultor o que é exigido no seu caso; o banco do comprador costuma pedi-la."],
+  ["Ficha técnica da habitação, se aplicável",1,"Existe nos prédios mais recentes; se não a encontra, pergunte na câmara municipal e confirme com o seu consultor se é necessária."],
+  ["Áreas e titulares iguais em todos os documentos",2,"Compare caderneta, certidão e realidade; divergências corrigem-se antes de aparecer comprador."]]},
+ {t:"Localização e visitas", h:"Avalie como um comprador que não conhece a zona.", q:[
+  ["Transportes e acessos",2,"Indique no anúncio as distâncias a pé a metro, comboio ou autocarro e os acessos rodoviários."],
+  ["Comércio, escolas e serviços por perto",2,"Liste no anúncio o que existe a menos de dez minutos a pé."],
+  ["Estacionamento",2,"Sem lugar próprio, informe-se sobre dístico de residente ou avenças próximas e diga-o no anúncio."],
+  ["Ruído e envolvente",1,"Marque visitas nas horas mais calmas e destaque janelas duplas ou a orientação das divisões."],
+  ["Facilidade em marcar visitas",2,"Garanta visitas em 24 horas, incluindo fim do dia e sábados; cada visita adiada é um comprador perdido."]]}
+];
+var BANDS = [
+ {l:"A",min:85,n:"Pronto para o mercado",c:"var(--cA)",w:64,tx:"O imóvel está bem preparado. O foco agora é manter o preço alinhado com a zona e reagir depressa às propostas."},
+ {l:"B",min:70,n:"Quase pronto",c:"var(--cB)",w:71,tx:"Faltam poucos ajustes. Resolver os pontos abaixo antes de anunciar, ou de renovar o anúncio, costuma encurtar o tempo de venda."},
+ {l:"C",min:55,n:"Com ajustes a fazer",c:"var(--cC)",w:78,tx:"Há pontos que estão a tirar força ao imóvel. Vale a pena tratá-los antes de gastar mais semanas de mercado."},
+ {l:"D",min:40,n:"Precisa de trabalho",c:"var(--cD)",w:85,tx:"Tal como está, o imóvel compete em desvantagem. Comece pelos três primeiros pontos do plano."},
+ {l:"E",min:0,n:"Ainda não está pronto",c:"var(--cE)",w:92,tx:"Anunciar agora arrisca queimar o imóvel no mercado. Prepare-o primeiro, seguindo o plano por ordem."}
+];
+function bandOf(s){ for(var i=0;i<BANDS.length;i++) if(s>=BANDS[i].min) return BANDS[i]; return BANDS[BANDS.length-1]; }
+/* ans: matriz [área][critério] com notas de 1 a 5 */
+function compute(ans){
+  var num=0,den=0,areas=[],weak=[];
+  GROUPS.forEach(function(g,gi){
+    var n=0,d=0;
+    g.q.forEach(function(q,qi){
+      var v=ans[gi][qi],w=q[1];
+      n+=w*(v-1); d+=w*4;
+      if(v<=3) weak.push({label:q[0],tip:q[2],area:g.t,v:v,cost:w*(5-v)});
+    });
+    num+=n; den+=d; areas.push({t:g.t,s:Math.round(n/d*100)});
+  });
+  weak.sort(function(a,b){return b.cost-a.cost || a.v-b.v;});
+  return {score:Math.round(num/den*100),areas:areas,weak:weak.slice(0,6)};
+}
+function market(tempo,visitas,propostas){
+  if(tempo===0) return "Ainda não anunciou, por isso vai a tempo de lançar bem: as primeiras três semanas concentram a maior parte da procura.";
+  if(propostas>=1) return "Já recebeu propostas e o imóvel continua no mercado. Reveja os valores recusados: costumam indicar o preço que o mercado aceita hoje.";
+  if(visitas>=3) return "Tem visitas mas não tem propostas. Normalmente significa que o imóvel desilude ao vivo face ao anúncio, ou que o preço está acima do que quem visita aceita pagar.";
+  if(tempo>=3 && visitas<=1) return "Está há mais de três meses no mercado quase sem visitas. O problema está antes da visita: preço ou anúncio (sobretudo fotografias).";
+  if(tempo>=2 && visitas<=1) return "Poucas visitas para o tempo de anúncio. Reveja o preço face aos concorrentes e a qualidade das fotografias.";
+  return "O tempo de anúncio e o número de visitas estão dentro do habitual. Continue a acompanhar semana a semana.";
+}
+/*LOGIC:END*/
+
+var $=function(id){return document.getElementById(id);};
+var ANCH=["Fraco","Insuf.","Razoável","Bom","Excelente"];
+var answers=GROUPS.map(function(g){return g.q.map(function(){return 0;});});
+var gi=0;
+
+function ladder(el,score){
+  el.textContent="";
+  var b=bandOf(score);
+  BANDS.forEach(function(x){
+    var r=document.createElement("div"); r.className="rung"+(x===b?" on":"");
+    var bar=document.createElement("div"); bar.className="bar"; bar.style.background=x.c; bar.style.width=x.w+"%";
+    bar.textContent=x.l+" "; var s=document.createElement("span"); s.textContent=x.n; bar.appendChild(s);
+    var pt=document.createElement("div"); pt.className="pt"; pt.textContent="◀ "+score;
+    r.appendChild(bar); r.appendChild(pt); el.appendChild(r);
+  });
+}
+function show(n){
+  ["s1","s2","s3"].forEach(function(id,i){$(id).hidden=(i!==n-1);});
+  Array.prototype.forEach.call($("steps").children,function(li,i){li.className=i<n-1?"done":(i===n-1?"now":"");});
+  $("steps").scrollIntoView({block:"start"});
+}
+function answered(){var c=0;answers.forEach(function(a){a.forEach(function(v){if(v)c++;});});return c;}
+function renderGroup(){
+  var g=GROUPS[gi];
+  $("gCount").textContent="Área "+(gi+1)+" de "+GROUPS.length;
+  $("gTitle").textContent=g.t; $("gHelp").textContent=g.h;
+  $("next").textContent=gi===GROUPS.length-1?"Ver resultado":"Seguinte";
+  $("e2").hidden=true;
+  var box=$("qs"); box.textContent="";
+  g.q.forEach(function(q,qi){
+    var fs=document.createElement("fieldset"); fs.className="q"; fs.id="q-"+gi+"-"+qi;
+    var lg=document.createElement("legend"); lg.textContent=q[0];
+    var sm=document.createElement("small"); sm.textContent="peso "+q[1]; lg.appendChild(sm); fs.appendChild(lg);
+    var sc=document.createElement("div"); sc.className="scale";
+    for(var v=1;v<=5;v++){(function(v){
+      var lb=document.createElement("label");
+      var inp=document.createElement("input"); inp.type="radio"; inp.name="q-"+gi+"-"+qi; inp.id="q-"+gi+"-"+qi+"-"+v; inp.value=v;
+      inp.checked=answers[gi][qi]===v;
+      inp.setAttribute("aria-label",v+" de 5, "+ANCH[v-1]);
+      inp.addEventListener("change",function(){answers[gi][qi]=v; fs.classList.remove("miss"); prog();});
+      var sp=document.createElement("span"); sp.textContent=v; var i=document.createElement("i"); i.textContent=ANCH[v-1]; sp.appendChild(i);
+      lb.appendChild(inp); lb.appendChild(sp); sc.appendChild(lb);
+    })(v);}
+    fs.appendChild(sc); box.appendChild(fs);
+  });
+  prog();
+}
+function prog(){$("progBar").style.width=Math.round(answered()/30*100)+"%";}
+function val(id){return $(id).value.trim();}
+function selText(id){var s=$(id);return s.options[s.selectedIndex].text;}
+function eur(s){var n=parseInt(String(s).replace(/\D/g,""),10);return isNaN(n)?"":n.toLocaleString("pt-PT")+" €";}
+
+function propLine(){
+  var p=[val("tipo")]; if(val("tipologia"))p[0]+=" "+val("tipologia");
+  var a=parseInt(val("area").replace(/\D/g,""),10); if(!isNaN(a))p.push(a+" m²");
+  p.push([val("zona"),val("concelho")].filter(Boolean).join(", "));
+  return p.join(" · ");
+}
+function result(){
+  var r=compute(answers), b=bandOf(r.score);
+  $("rProp").textContent=propLine();
+  $("rHead").textContent="Classe "+b.l+": "+b.n.toLowerCase();
+  $("rScore").textContent=r.score; ladder($("rLadder"),r.score); $("rText").textContent=b.tx;
+  var ar=$("rAreas"); ar.textContent="";
+  r.areas.forEach(function(a){
+    var row=document.createElement("div"); row.className="area";
+    var n=document.createElement("span"); n.textContent=a.t;
+    var t=document.createElement("div"); t.className="track"; var f=document.createElement("div"); f.style.width=a.s+"%"; f.style.background=bandOf(a.s).c; t.appendChild(f);
+    var v=document.createElement("b"); v.textContent=a.s;
+    row.appendChild(n); row.appendChild(t); row.appendChild(v); ar.appendChild(row);
+  });
+  var mk=market(+$("tempo").value,+$("visitas").value,+$("propostas").value); $("rMarket").textContent=mk;
+  var pl=$("rPlan"); pl.textContent="";
+  if(!r.weak.length){var li=document.createElement("li"); li.textContent="Não deu nota abaixo de 4 a nenhum critério. Não há correções prioritárias."; pl.appendChild(li);}
+  r.weak.forEach(function(w,i){
+    var li=document.createElement("li"); var bb=document.createElement("b"); bb.textContent=(i+1)+". "+w.label+" (nota "+w.v+")";
+    var sp=document.createElement("span"); sp.textContent=w.tip; li.appendChild(bb); li.appendChild(sp); pl.appendChild(li);
+  });
+  var L=["Olá António, fiz o Diagnóstico Pronto a Vender.",""];
+  if(val("nome"))L.push("Nome: "+val("nome"));
+  if(val("tel"))L.push("Telemóvel: "+val("tel"));
+  if(val("email"))L.push("Email: "+val("email"));
+  L.push("Imóvel: "+propLine());
+  L.push("Objetivo: "+val("objetivo")+(eur(val("valor"))?" · valor pretendido "+eur(val("valor")):""));
+  if(val("ce"))L.push("Classe energética: "+val("ce"));
+  L.push("Mercado: "+selText("tempo").toLowerCase()+" · visitas: "+selText("visitas").toLowerCase()+" · propostas: "+selText("propostas").toLowerCase());
+  L.push("","Resultado: "+r.score+"/100, classe "+b.l+" ("+b.n+")");
+  L.push("Por área: "+r.areas.map(function(a){return a.t+" "+a.s;}).join("; "));
+  if(r.weak.length)L.push("Pontos mais fracos: "+r.weak.slice(0,4).map(function(w){return w.label.toLowerCase();}).join("; "));
+  L.push("","Gostava de receber um estudo de mercado da minha zona.");
+  $("msg").value=L.join("\n"); syncWa(); $("copyMsg").textContent="";
+  show(3);
+}
+function syncWa(){
+  var a=$("wa");
+  if(/^\d{9,15}$/.test(WHATSAPP)){a.hidden=false; a.href="https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent($("msg").value);}
+  else a.hidden=true;
+}
+
+$("f1").addEventListener("submit",function(e){
+  e.preventDefault();
+  var miss=[]; if(!val("concelho"))miss.push("o concelho"); if(!val("tipo"))miss.push("o tipo de imóvel");
+  if(miss.length){$("e1").textContent="Falta indicar "+miss.join(" e ")+"."; $("e1").hidden=false; $(val("concelho")?"tipo":"concelho").focus(); return;}
+  $("e1").hidden=true; gi=0; renderGroup(); show(2);
+});
+$("back").addEventListener("click",function(){ if(gi===0){show(1);} else {gi--; renderGroup(); $("steps").scrollIntoView({block:"start"});} });
+$("next").addEventListener("click",function(){
+  var ok=true;
+  answers[gi].forEach(function(v,qi){ if(!v){ok=false; $("q-"+gi+"-"+qi).classList.add("miss");} });
+  if(!ok){$("e2").hidden=false; return;}
+  if(gi<GROUPS.length-1){gi++; renderGroup(); $("steps").scrollIntoView({block:"start"});} else result();
+});
+$("redo").addEventListener("click",function(){gi=0; renderGroup(); show(2);});
+$("msg").addEventListener("input",syncWa);
+$("copy").addEventListener("click",function(){
+  var t=$("msg"), done=function(){$("copyMsg").textContent="Resumo copiado. Cole-o numa mensagem para o consultor.";};
+  var fb=function(){t.focus(); t.select(); $("copyMsg").textContent="Texto selecionado. Copie com Ctrl+C ou com o menu do telemóvel.";};
+  try{ navigator.clipboard.writeText(t.value).then(done,fb); }catch(err){ fb(); }
+});
+ladder($("sampleLadder"),64);
+</script>
