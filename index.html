@@ -246,6 +246,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
       <h3>Quanto pode custar</h3>
       <p class="muted small">Orçamento estimativo para os pontos a que deu nota 3 ou menos: nota 3 conta como reparação, nota 1 ou 2 como substituição. Mão de obra e materiais a preços médios de mercado.</p>
       <table class="cost"><tbody id="rCost"></tbody><tfoot><tr><td>Total estimado</td><td id="rCostTot"></td></tr></tfoot></table>
+      <p class="small" id="rCostWhy"><b>Porquê um mínimo e um máximo?</b> Cada linha junta o preço mais baixo e o mais alto que encontrámos no mercado para esse trabalho. A diferença vem sobretudo de três coisas: a gama dos materiais e equipamentos escolhidos, o estado real do que está por baixo (paredes, canalização, base do pavimento), que só se confirma em obra, e a zona e o profissional contratado. Com uma visita e orçamentos firmes, o intervalo fecha num valor único.</p>
       <p class="small muted" id="rCostNote"></p>
       <p class="partner" id="rPartner"><b>Precisa de quem faça os trabalhos?</b> O António Alexandre pode pô-lo em contacto com parceiros de confiança, com trabalho de qualidade comprovada, para lhe darem orçamento firme e executarem as reparações. Basta indicá-lo na mensagem abaixo.</p>
     </div>
@@ -436,8 +437,8 @@ function renderCost(){
   var box=$("rCostBox"),e=estimate();
   if(OCULTAR_ORC||!e){box.hidden=true; return null;}
   box.hidden=false; var tb=$("rCost"); tb.textContent="";
-  if(!e.items.length){var tr0=document.createElement("tr"),td0=document.createElement("td"); td0.colSpan=2; td0.textContent="Pelas suas respostas não há obras nem serviços a orçamentar."; tr0.appendChild(td0); tb.appendChild(tr0); $("rCostTot").textContent="0 €"; $("rCostNote").textContent=""; $("rPartner").hidden=true; return e;}
-  $("rPartner").hidden=false;
+  if(!e.items.length){var tr0=document.createElement("tr"),td0=document.createElement("td"); td0.colSpan=2; td0.textContent="Pelas suas respostas não há obras nem serviços a orçamentar."; tr0.appendChild(td0); tb.appendChild(tr0); $("rCostTot").textContent="0 €"; $("rCostNote").textContent=""; $("rCostWhy").hidden=true; $("rPartner").hidden=true; return e;}
+  $("rPartner").hidden=false; $("rCostWhy").hidden=false;
   e.items.forEach(function(x){
     var tr=document.createElement("tr"),t1=document.createElement("td"),t2=document.createElement("td"),sp=document.createElement("span");
     t1.textContent=x.n; sp.textContent=x.x; t1.appendChild(sp); t2.textContent=fmtR(x.lo,x.hi);
