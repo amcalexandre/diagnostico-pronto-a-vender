@@ -14,6 +14,9 @@ const out = `<!doctype html>
 <meta property="og:title" content="A sua casa está pronta para ir ao mercado?">
 <meta property="og:description" content="${desc}">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://amcalexandre.github.io/diagnostico-pronto-a-vender/icone.png">
+<link rel="icon" type="image/png" href="icone.png">
+<link rel="apple-touch-icon" href="icone.png">
 <style>body{margin:0}img{max-width:100%}</style>
 ${head}</head>
 <body>
