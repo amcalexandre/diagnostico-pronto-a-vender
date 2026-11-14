@@ -574,7 +574,7 @@ function cpFile(p2){
   return cpCache[p2];
 }
 $("cp").addEventListener("input",function(){
-  var d=this.value.replace(/D/g,"").slice(0,7); this.value=d.length>4?d.slice(0,4)+"-"+d.slice(4):d;
+  var d=this.value.replace(/\D/g,"").slice(0,7); this.value=d.length>4?d.slice(0,4)+"-"+d.slice(4):d;
   var msg=$("cpMsg"), seq=++cpSeq;
   if(d.length<7){msg.textContent=""; return;}
   var cp4=d.slice(0,4), cp3=d.slice(4), manual="Escolha o concelho e a freguesia nas listas.";
