@@ -122,6 +122,14 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 .plan li:first-child{border-top:0}
 .plan li b{font-weight:600}
 .plan li span{color:var(--muted);font-size:.92rem}
+.cost{width:100%;border-collapse:collapse;margin-top:8px;font-size:.95rem}
+.cost td{padding:10px 0;border-top:1px solid var(--line);vertical-align:top}
+.cost tr:first-child td{border-top:0}
+.cost td:last-child{text-align:right;white-space:nowrap;padding-left:12px;font-variant-numeric:tabular-nums}
+.cost td span{display:block;color:var(--muted);font-size:.85rem}
+.cost tfoot td{border-top:2px solid var(--ink);font-weight:700;padding-top:12px}
+.partner{margin:14px 0 0;padding:12px 14px;border-radius:var(--r);background:var(--sunken);border-left:3px solid var(--accent);font-size:.95rem}
+.partner b{display:block;margin-bottom:2px}
 .sec{display:flex;flex-direction:column;gap:12px}
 </style>
 
@@ -137,7 +145,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
       <h1>A sua casa está pronta para ir ao mercado?</h1>
       <p>Avalie o seu imóvel em seis áreas e receba uma classificação de A a E, os pontos que mais o prejudicam e o que fazer primeiro.</p>
       <ul class="facts">
-        <li><b>30</b> critérios</li><li><b>6</b> áreas</li><li>resultado de <b>0 a 100</b></li><li>cerca de <b>5</b> minutos</li>
+        <li><b>32</b> critérios</li><li><b>6</b> áreas</li><li>resultado de <b>0 a 100</b></li><li>cerca de <b>5</b> minutos</li>
       </ul>
       <p class="small muted">É um diagnóstico de preparação para a venda ou arrendamento. Não é uma avaliação do valor do imóvel.</p>
     </div>
@@ -151,7 +159,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
 
   <ol class="steps" id="steps">
     <li class="now"><b>1. Imóvel</b><span>Perfil e situação atual</span></li>
-    <li><b>2. Avaliação</b><span>30 notas de 1 a 5</span></li>
+    <li><b>2. Avaliação</b><span>32 notas de 1 a 5</span></li>
     <li><b>3. Resultado</b><span>Classe, pontos fracos e plano</span></li>
   </ol>
 
@@ -178,6 +186,10 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
           <select id="wc"><option value="">Não indicar</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5 ou mais</option></select></label>
         <label class="f">Instalações sanitárias (IS)
           <select id="is"><option value="">Não indicar</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5 ou mais</option></select></label>
+        <label class="f">Janelas com estores
+          <select id="janelas"><option value="">Não indicar</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10 ou mais</option></select></label>
+        <label class="f">Tipo de estores
+          <select id="tipoEst"><option value="">Não indicar</option><option>Manuais</option><option>Elétricos</option><option>Manuais e elétricos</option></select></label>
         <label class="f">Área bruta privativa (m²) <input id="area" inputmode="numeric"></label>
         <label class="f"><span>Ano do prédio <em>opcional</em></span><input id="ano" inputmode="numeric" maxlength="4" placeholder="1998"></label>
         <label class="f">Classe energética
@@ -230,6 +242,13 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
     <div class="card sec"><h3>Nota por área</h3><div class="areas" id="rAreas"></div></div>
     <div class="card sec" id="rMarketBox"><h3>Leitura da situação no mercado</h3><p id="rMarket"></p></div>
     <div class="card sec"><h3>O que fazer primeiro</h3><p class="muted small">Ordenado pelo que mais pesa no resultado.</p><ol class="plan" id="rPlan"></ol></div>
+    <div class="card sec" id="rCostBox" hidden>
+      <h3>Quanto pode custar</h3>
+      <p class="muted small">Orçamento estimativo para os pontos a que deu nota 3 ou menos: nota 3 conta como reparação, nota 1 ou 2 como substituição. Mão de obra e materiais a preços médios de mercado.</p>
+      <table class="cost"><tbody id="rCost"></tbody><tfoot><tr><td>Total estimado</td><td id="rCostTot"></td></tr></tfoot></table>
+      <p class="small muted" id="rCostNote"></p>
+      <p class="partner" id="rPartner"><b>Precisa de quem faça os trabalhos?</b> O António Alexandre pode pô-lo em contacto com parceiros de confiança, com trabalho de qualidade comprovada, para lhe darem orçamento firme e executarem as reparações. Basta indicá-lo na mensagem abaixo.</p>
+    </div>
     <div class="card sec">
       <h3>Quer uma segunda opinião e um estudo de mercado da sua zona?</h3>
       <p class="muted">Envie este resumo ao António Alexandre. Pode editar o texto antes de enviar.</p>
@@ -241,7 +260,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
       </div>
       <p class="small muted" id="copyMsg" aria-live="polite"></p>
     </div>
-    <p class="small muted">Diagnóstico indicativo, calculado a partir das suas respostas com uma grelha fixa de 30 critérios ponderados. Não substitui uma visita ao imóvel nem um estudo de mercado.</p>
+    <p class="small muted">Diagnóstico indicativo, calculado a partir das suas respostas com uma grelha fixa de 32 critérios ponderados. Não substitui uma visita ao imóvel nem um estudo de mercado.</p>
   </section>
 </div>
 
@@ -262,7 +281,9 @@ var GROUPS = [
   ["Pavimentos",2,"Repare ou envernize as zonas gastas; um pavimento cuidado muda a primeira impressão."],
   ["Cozinha",3,"Sem fazer obra total: troque puxadores, bancada ou torneira e trate dos eletrodomésticos avariados."],
   ["Casas de banho",3,"Renove juntas, silicones e torneiras; resolva manchas de humidade antes das visitas."],
-  ["Canalização e instalação elétrica",3,"Peça uma verificação a um técnico e guarde o relatório para mostrar a quem visita."]]},
+  ["Canalização e instalação elétrica",3,"Peça uma verificação a um técnico e guarde o relatório para mostrar a quem visita."],
+  ["Estores e persianas",1,"Repare fitas, lâminas partidas e motores avariados: um estore preso é lido como falta de manutenção."],
+  ["Loiças sanitárias (sanita, lavatório, base de duche ou banheira)",2,"Troque loiças rachadas, manchadas ou datadas; sanita e lavatório novos mudam a imagem da casa de banho."]]},
  {t:"Apresentação nas visitas", h:"Pense no que um estranho vê nos primeiros dois minutos dentro de casa.", q:[
   ["Arrumação e despersonalização",2,"Retire metade dos objetos, fotografias de família e móveis a mais; a casa parece maior."],
   ["Limpeza e cheiros",2,"Faça uma limpeza profunda e areje antes de cada visita; tabaco e animais afastam compradores."],
@@ -368,11 +389,63 @@ function renderGroup(){
   });
   prog();
 }
-function prog(){$("progBar").style.width=Math.round(answered()/30*100)+"%";}
+function prog(){$("progBar").style.width=Math.round(answered()/GROUPS.reduce(function(n,g){return n+g.q.length;},0)*100)+"%";}
 function val(id){return $(id).value.trim();}
 function selText(id){var s=$(id);return s.options[s.selectedIndex].text;}
 function eur(s){var n=parseInt(String(s).replace(/\D/g,""),10);return isNaN(n)?"":n.toLocaleString("pt-PT")+" €";}
 
+/* ORÇAMENTO ESTIMATIVO. Preços de referência pesquisados a 13-11-2026 (Habitissimo, Zaask, Fixando, Worten Resolve, Portal SCE), mão de obra e materiais.
+   Para ocultar ao cliente, partilhe o link com #sem-orcamento no fim. */
+var OCULTAR_ORC=(function(){try{return location.hash==="#sem-orcamento";}catch(e){return false;}})();
+var AREA_TIP={T0:40,T1:55,T2:80,T3:105,T4:135,"T5 ou mais":170};
+function areaEst(){var a=parseInt(val("area").replace(/\D/g,""),10); if(!isNaN(a)&&a>=15&&a<=2000)return {a:a,est:false}; return {a:AREA_TIP[val("tipologia")]||80,est:true};}
+function nWC(){var w=val("wc"); if(w==="")return 1; return w==="5 ou mais"?5:+w;}
+function nIS(){var w=val("is"); if(w==="")return 0; return w==="5 ou mais"?5:+w;}
+var JAN_TIP={T0:2,T1:3,T2:4,T3:5,T4:6,"T5 ou mais":7};
+function nJan(){var j=val("janelas"); if(j==="")return JAN_TIP[val("tipologia")]||4; return j==="10 ou mais"?10:+j;}
+function estimate(){
+  if(["Apartamento","Moradia","Loja ou escritório"].indexOf(val("tipo"))<0)return null;
+  var A=areaEst(),a=A.a,w=nWC(),tip=val("tipologia"),it=[],v;
+  function g(gi,qi){return answers[gi][qi]||5;}
+  function add(n,x,lo,hi){it.push({n:n,x:x,lo:Math.round(lo/10)*10,hi:Math.round(hi/10)*10});}
+  v=g(1,0); if(v<=2)add("Pintura de paredes e tetos","pintura integral (cerca de "+(a*3)+" m² de superfície)",a*3*6,a*3*12); else if(v===3)add("Pintura de paredes e tetos","retoques e divisões principais",a*1.5*5,a*1.5*12);
+  var pv=Math.round(a*0.8);
+  v=g(1,1); if(v<=2)add("Pavimentos","substituição por pavimento flutuante (cerca de "+pv+" m²)",pv*18,pv*55); else if(v===3)add("Pavimentos","afagamento e envernizamento ou reparação (cerca de "+pv+" m²)",pv*13,pv*30);
+  v=g(1,2); if(v<=2)add("Cozinha","remodelação",2000,7000); else if(v===3)add("Cozinha","atualização sem obra: puxadores, torneira, pintura de azulejo",400,1200);
+  if(w>0){var s=w>1?" ("+w+" casas de banho)":""; v=g(1,3); if(v<=2)add("Casas de banho","remodelação, com loiças incluídas"+s,2300*w,5000*w); else if(v===3)add("Casas de banho","juntas, silicones e torneiras"+s,250*w,800*w);}
+  var wcRem=w>0&&g(1,3)<=2, ni=nIS(), un=(wcRem?0:w)+ni*0.5;
+  if(un>0){var pecas=[]; if(!wcRem&&w>0)pecas.push(w+(w>1?" casas de banho":" casa de banho")); if(ni>0)pecas.push(ni+(ni>1?" instalações sanitárias":" instalação sanitária")); var sl=" ("+pecas.join(" e ")+")";
+    v=g(1,6); if(v<=2)add("Loiças sanitárias","substituição de sanita, bidé, lavatório com móvel e base de duche"+sl,900*un,2000*un); else if(v===3)add("Loiças sanitárias","troca de uma ou duas peças, por exemplo sanita ou móvel de lavatório"+sl,200*un,500*un);}
+  var ja=nJan(),te=val("tipoEst");
+  if(ja>0){v=g(1,5);
+    if(v<=2)add("Estores e persianas","estores novos instalados ("+ja+(ja>1?" janelas":" janela")+")",250*ja,600*ja);
+    else if(v===3){var jr=Math.max(1,Math.ceil(ja/2)),pr=te==="Elétricos"?[150,270]:te==="Manuais e elétricos"?[100,210]:[50,150];
+      add("Estores e persianas",(te==="Elétricos"?"troca de motor ou reparação":te==="Manuais e elétricos"?"fitas, lâminas e motores":"fitas, lâminas e afinação")+" (cerca de "+jr+" de "+ja+" janelas)",pr[0]*jr,pr[1]*jr);}}
+  v=g(1,4); if(v<=2)add("Eletricidade e canalização","renovação parcial da instalação",1250,3500); else if(v===3)add("Eletricidade e canalização","verificação por técnico e pequenas correções",150,400);
+  v=g(2,1); if(v<=3)add("Limpeza profunda","limpeza a fundo por empresa de limpezas",Math.max(100,a*1.5),Math.max(200,a*3));
+  v=g(2,3); if(v<=2)add("Pequenas reparações","1 a 2 dias de faz-tudo: portas, puxadores, tomadas",200,700); else if(v===3)add("Pequenas reparações","meio dia a um dia de faz-tudo",80,300);
+  v=g(3,0); if(v<=3)add("Fotografia profissional","sessão com fotografias editadas",55,250);
+  v=g(4,1); if(v<=2||val("ce")==="Sem certificado"){var ce=/^T[01]$/.test(tip)?[170,260]:(/^T[23]$/.test(tip)||!tip)?[200,330]:[290,450]; add("Certificado energético","emissão por perito qualificado, com taxa ADENE",ce[0],ce[1]);}
+  var lo=0,hi=0; it.forEach(function(x){lo+=x.lo;hi+=x.hi;});
+  return {items:it,lo:lo,hi:hi,est:A.est,a:a};
+}
+function fmtN(x){return String(x).replace(/\B(?=(\d{3})+(?!\d))/g,".");}
+function fmtR(lo,hi){return fmtN(lo)+" a "+fmtN(hi)+" €";}
+function renderCost(){
+  var box=$("rCostBox"),e=estimate();
+  if(OCULTAR_ORC||!e){box.hidden=true; return null;}
+  box.hidden=false; var tb=$("rCost"); tb.textContent="";
+  if(!e.items.length){var tr0=document.createElement("tr"),td0=document.createElement("td"); td0.colSpan=2; td0.textContent="Pelas suas respostas não há obras nem serviços a orçamentar."; tr0.appendChild(td0); tb.appendChild(tr0); $("rCostTot").textContent="0 €"; $("rCostNote").textContent=""; $("rPartner").hidden=true; return e;}
+  $("rPartner").hidden=false;
+  e.items.forEach(function(x){
+    var tr=document.createElement("tr"),t1=document.createElement("td"),t2=document.createElement("td"),sp=document.createElement("span");
+    t1.textContent=x.n; sp.textContent=x.x; t1.appendChild(sp); t2.textContent=fmtR(x.lo,x.hi);
+    tr.appendChild(t1); tr.appendChild(t2); tb.appendChild(tr);
+  });
+  $("rCostTot").textContent=fmtR(e.lo,e.hi);
+  $("rCostNote").textContent=(e.est?"Não indicou a área, por isso usámos cerca de "+e.a+" m², típica desta tipologia. ":"")+(val("janelas")===""&&e.items.some(function(x){return x.n==="Estores e persianas";})?"Não indicou o número de janelas com estores, por isso usámos "+nJan()+", típico desta tipologia. ":"")+"Valores médios de mercado em Portugal, com mão de obra e materiais; em Lisboa tendem para o limite superior. É uma estimativa indicativa: o valor real só se fecha com visita e orçamentos de profissionais.";
+  return e;
+}
 function propLine(){
   var p=[val("tipo")]; if(val("tipologia"))p[0]+=" "+val("tipologia");
   var a=parseInt(val("area").replace(/\D/g,""),10); if(!isNaN(a))p.push(a+" m²");
@@ -399,19 +472,21 @@ function result(){
     var li=document.createElement("li"); var bb=document.createElement("b"); bb.textContent=(i+1)+". "+w.label+" (nota "+w.v+")";
     var sp=document.createElement("span"); sp.textContent=w.tip; li.appendChild(bb); li.appendChild(sp); pl.appendChild(li);
   });
+  var oc=renderCost();
   var L=["Olá António, fiz o Diagnóstico Pronto a Vender.",""];
   if(val("nome"))L.push("Nome: "+val("nome"));
   if(val("tel"))L.push("Telemóvel: "+val("tel"));
   if(val("email"))L.push("Email: "+val("email"));
   L.push("Imóvel: "+propLine());
   L.push("Objetivo: "+val("objetivo")+(eur(val("valor"))?" · valor pretendido "+eur(val("valor")):""));
-  var ex=[]; if(/^\d{4}-\d{3}$/.test(val("cp")))ex.push("código postal: "+val("cp")); if(val("wc"))ex.push("WC: "+val("wc")); if(val("is"))ex.push("IS: "+val("is")); if(anoOk())ex.push("ano do prédio: "+val("ano"));
+  var ex=[]; if(/^\d{4}-\d{3}$/.test(val("cp")))ex.push("código postal: "+val("cp")); if(val("wc"))ex.push("WC: "+val("wc")); if(val("is"))ex.push("IS: "+val("is")); if(anoOk())ex.push("ano do prédio: "+val("ano")); if(val("janelas"))ex.push("janelas com estores: "+val("janelas")+(val("tipoEst")?" ("+val("tipoEst").toLowerCase()+")":""));
   if(ex.length)L.push("Detalhes: "+ex.join(" · "));
   if(val("ce"))L.push("Classe energética: "+val("ce"));
   L.push("Mercado: "+selText("tempo").toLowerCase()+" · visitas: "+selText("visitas").toLowerCase()+" · propostas: "+selText("propostas").toLowerCase());
   L.push("","Resultado: "+r.score+"/100, classe "+b.l+" ("+b.n+")");
   L.push("Por área: "+r.areas.map(function(a){return a.t+" "+a.s;}).join("; "));
   if(r.weak.length)L.push("Pontos mais fracos: "+r.weak.slice(0,4).map(function(w){return w.label.toLowerCase();}).join("; "));
+  if(oc&&oc.items.length){L.push("Orçamento estimativo: "+fmtR(oc.lo,oc.hi)+" ("+oc.items.map(function(x){return x.n.toLowerCase();}).join(", ")+")"); L.push("Gostava que me indicasse parceiros de confiança para fazer as reparações.");}
   L.push("","Gostava de receber um estudo de mercado da minha zona.");
   $("msg").value=L.join("\n"); syncWa(); $("copyMsg").textContent="";
   show(3);
@@ -517,3 +592,4 @@ $("cp").addEventListener("input",function(){
 });
 ladder($("sampleLadder"),64);
 </script>
+
