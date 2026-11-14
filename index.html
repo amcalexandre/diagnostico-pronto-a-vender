@@ -593,7 +593,7 @@ $("cp").addEventListener("input",function(){
     msg.textContent=dom?"Este código postal não consta da base. Pela zona postal "+cp4+", o concelho é "+dom[0]+". Escolha a freguesia na lista.":"Este código postal não consta da base. "+manual;
   },function(e){
     if(seq!==cpSeq)return;
-    msg.textContent=(e&&e.status===404?"Este código postal não consta da base. ":"Não foi possível ler a base de códigos postais. ")+manual;
+    msg.textContent="Não encontrámos este código postal. "+manual;
   });
 });
 ladder($("sampleLadder"),64);
