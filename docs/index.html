@@ -446,9 +446,9 @@ function estimate(){
   var lo=0,hi=0; it.forEach(function(x){lo+=x.lo;hi+=x.hi;});
   return {items:it,lo:lo,hi:hi,est:A.est,a:a};
 }
-/* REMODELAÇÃO TOTAL. Referência: obra real de remodelação total de uma moradia em Lisboa (171.979 € com IVA; 147,6 m² brutos, 110,85 m² úteis).
-   Sem estrutura nem arranjos exteriores: 756 €/m² bruto e 1.006 €/m² útil, arredondados para 750 a 1.000 €/m². */
-var FULL_M2=[750,1000];
+/* REMODELAÇÃO TOTAL. Referência: obra real de remodelação total de uma moradia em Lisboa (171.979 € sem IVA; 147,6 m² brutos, 110,85 m² úteis).
+   Sem estrutura nem arranjos exteriores: 756 €/m² bruto e 1.006 €/m² útil sem IVA; com IVA a 23%: 930 e 1.237, arredondados para 930 a 1.240 €/m². */
+var FULL_M2=[930,1240];
 function fullRemodel(){
   var n=0; for(var i=0;i<5;i++){var v=answers[1][i]; if(v&&v<=2)n++;}
   if(n<4)return null;
@@ -470,7 +470,7 @@ function renderCost(){
   $("rCostTot").textContent=fmtR(e.lo,e.hi);
   var fr=fullRemodel(), ff=$("rCostFull"); ff.hidden=!fr; e.full=fr;
   if(fr){ff.textContent=""; var fb=document.createElement("b"); fb.textContent="E se for uma remodelação total? "; ff.appendChild(fb);
-    ff.appendChild(document.createTextNode("Deu nota 1 ou 2 a quase todo o estado de conservação. Nestes casos pode compensar fazer a obra de uma vez em vez de reparações avulsas. Ordem de grandeza: "+fmtR(fr.lo,fr.hi)+" para cerca de "+fr.a+" m² ("+fmtN(FULL_M2[0])+" a "+fmtN(FULL_M2[1])+" € por m², com IVA). Inclui demolições, paredes, janelas, pavimentos, pinturas, casas de banho, cozinha e redes de água, esgotos e eletricidade; não inclui estrutura nem exteriores. A referência é uma remodelação total real em Lisboa, por isso serve de ordem de grandeza e não substitui um orçamento."));}
+    ff.appendChild(document.createTextNode("Deu nota 1 ou 2 a quase todo o estado de conservação. Nestes casos pode compensar fazer a obra de uma vez em vez de reparações avulsas. Ordem de grandeza: "+fmtR(fr.lo,fr.hi)+" para cerca de "+fr.a+" m² ("+fmtN(FULL_M2[0])+" a "+fmtN(FULL_M2[1])+" € por m², com IVA a 23%). Inclui demolições, paredes, janelas, pavimentos, pinturas, casas de banho, cozinha e redes de água, esgotos e eletricidade; não inclui estrutura nem exteriores. A referência é uma remodelação total real em Lisboa, por isso serve de ordem de grandeza e não substitui um orçamento."));}
   $("rCostNote").textContent=(e.est?"Não indicou a área, por isso usámos cerca de "+e.a+" m², típica desta tipologia. ":"")+(val("janelas")===""&&e.items.some(function(x){return x.n==="Estores e persianas";})?"Não indicou o número de janelas com estores, por isso usámos "+nJan()+", típico desta tipologia. ":"")+"Valores médios de mercado em Portugal, com mão de obra e materiais; em Lisboa tendem para o limite superior. É uma estimativa indicativa: o valor real só se fecha com visita e orçamentos de profissionais.";
   return e;
 }
