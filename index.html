@@ -246,6 +246,7 @@ fieldset{border:0;padding:0;margin:0;min-width:0}
       <h3>Quanto pode custar</h3>
       <p class="muted small">Orçamento estimativo para os pontos a que deu nota 3 ou menos: nota 3 conta como reparação, nota 1 ou 2 como substituição. Mão de obra e materiais a preços médios de mercado.</p>
       <table class="cost"><tbody id="rCost"></tbody><tfoot><tr><td>Total estimado</td><td id="rCostTot"></td></tr></tfoot></table>
+      <p class="partner" id="rCostFull" hidden></p>
       <p class="small" id="rCostWhy"><b>Porquê um mínimo e um máximo?</b> Cada linha junta o preço mais baixo e o mais alto que encontrámos no mercado para esse trabalho. A diferença vem sobretudo de três coisas: a gama dos materiais e equipamentos escolhidos, o estado real do que está por baixo (paredes, canalização, base do pavimento), que só se confirma em obra, e a zona e o profissional contratado. Com uma visita e orçamentos firmes, o intervalo fecha num valor único.</p>
       <p class="small muted" id="rCostNote"></p>
       <p class="partner" id="rPartner"><b>Precisa de quem faça os trabalhos?</b> O António Alexandre pode pô-lo em contacto com parceiros de confiança, com trabalho de qualidade comprovada, para lhe darem orçamento firme e executarem as reparações. Basta indicá-lo na mensagem abaixo.</p>
@@ -431,13 +432,21 @@ function estimate(){
   var lo=0,hi=0; it.forEach(function(x){lo+=x.lo;hi+=x.hi;});
   return {items:it,lo:lo,hi:hi,est:A.est,a:a};
 }
+/* REMODELAÇÃO TOTAL. Referência: obra real de remodelação total de uma moradia em Lisboa (171.979 € com IVA; 147,6 m² brutos, 110,85 m² úteis).
+   Sem estrutura nem arranjos exteriores: 756 €/m² bruto e 1.006 €/m² útil, arredondados para 750 a 1.000 €/m². */
+var FULL_M2=[750,1000];
+function fullRemodel(){
+  var n=0; for(var i=0;i<5;i++){var v=answers[1][i]; if(v&&v<=2)n++;}
+  if(n<4)return null;
+  var A=areaEst(); return {a:A.a,est:A.est,lo:Math.round(A.a*FULL_M2[0]/1000)*1000,hi:Math.round(A.a*FULL_M2[1]/1000)*1000};
+}
 function fmtN(x){return String(x).replace(/\B(?=(\d{3})+(?!\d))/g,".");}
 function fmtR(lo,hi){return fmtN(lo)+" a "+fmtN(hi)+" €";}
 function renderCost(){
   var box=$("rCostBox"),e=estimate();
   if(OCULTAR_ORC||!e){box.hidden=true; return null;}
   box.hidden=false; var tb=$("rCost"); tb.textContent="";
-  if(!e.items.length){var tr0=document.createElement("tr"),td0=document.createElement("td"); td0.colSpan=2; td0.textContent="Pelas suas respostas não há obras nem serviços a orçamentar."; tr0.appendChild(td0); tb.appendChild(tr0); $("rCostTot").textContent="0 €"; $("rCostNote").textContent=""; $("rCostWhy").hidden=true; $("rPartner").hidden=true; return e;}
+  if(!e.items.length){var tr0=document.createElement("tr"),td0=document.createElement("td"); td0.colSpan=2; td0.textContent="Pelas suas respostas não há obras nem serviços a orçamentar."; tr0.appendChild(td0); tb.appendChild(tr0); $("rCostTot").textContent="0 €"; $("rCostNote").textContent=""; $("rCostWhy").hidden=true; $("rCostFull").hidden=true; $("rPartner").hidden=true; return e;}
   $("rPartner").hidden=false; $("rCostWhy").hidden=false;
   e.items.forEach(function(x){
     var tr=document.createElement("tr"),t1=document.createElement("td"),t2=document.createElement("td"),sp=document.createElement("span");
@@ -445,6 +454,9 @@ function renderCost(){
     tr.appendChild(t1); tr.appendChild(t2); tb.appendChild(tr);
   });
   $("rCostTot").textContent=fmtR(e.lo,e.hi);
+  var fr=fullRemodel(), ff=$("rCostFull"); ff.hidden=!fr; e.full=fr;
+  if(fr){ff.textContent=""; var fb=document.createElement("b"); fb.textContent="E se for uma remodelação total? "; ff.appendChild(fb);
+    ff.appendChild(document.createTextNode("Deu nota 1 ou 2 a quase todo o estado de conservação. Nestes casos pode compensar fazer a obra de uma vez em vez de reparações avulsas. Ordem de grandeza: "+fmtR(fr.lo,fr.hi)+" para cerca de "+fr.a+" m² ("+fmtN(FULL_M2[0])+" a "+fmtN(FULL_M2[1])+" € por m², com IVA). Inclui demolições, paredes, janelas, pavimentos, pinturas, casas de banho, cozinha e redes de água, esgotos e eletricidade; não inclui estrutura nem exteriores. A referência é uma remodelação total real em Lisboa, por isso serve de ordem de grandeza e não substitui um orçamento."));}
   $("rCostNote").textContent=(e.est?"Não indicou a área, por isso usámos cerca de "+e.a+" m², típica desta tipologia. ":"")+(val("janelas")===""&&e.items.some(function(x){return x.n==="Estores e persianas";})?"Não indicou o número de janelas com estores, por isso usámos "+nJan()+", típico desta tipologia. ":"")+"Valores médios de mercado em Portugal, com mão de obra e materiais; em Lisboa tendem para o limite superior. É uma estimativa indicativa: o valor real só se fecha com visita e orçamentos de profissionais.";
   return e;
 }
@@ -488,7 +500,7 @@ function result(){
   L.push("","Resultado: "+r.score+"/100, classe "+b.l+" ("+b.n+")");
   L.push("Por área: "+r.areas.map(function(a){return a.t+" "+a.s;}).join("; "));
   if(r.weak.length)L.push("Pontos mais fracos: "+r.weak.slice(0,4).map(function(w){return w.label.toLowerCase();}).join("; "));
-  if(oc&&oc.items.length){L.push("Orçamento estimativo: "+fmtR(oc.lo,oc.hi)+" ("+oc.items.map(function(x){return x.n.toLowerCase();}).join(", ")+")"); L.push("Gostava que me indicasse parceiros de confiança para fazer as reparações.");}
+  if(oc&&oc.items.length){L.push("Orçamento estimativo: "+fmtR(oc.lo,oc.hi)+" ("+oc.items.map(function(x){return x.n.toLowerCase();}).join(", ")+")"); if(oc.full)L.push("Remodelação total (ordem de grandeza): "+fmtR(oc.full.lo,oc.full.hi)); L.push("Gostava que me indicasse parceiros de confiança para fazer as reparações.");}
   L.push("","Gostava de receber um estudo de mercado da minha zona.");
   $("msg").value=L.join("\n"); syncWa(); $("copyMsg").textContent="";
   show(3);
